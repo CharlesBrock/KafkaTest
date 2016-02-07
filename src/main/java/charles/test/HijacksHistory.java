@@ -35,6 +35,10 @@ public class HijacksHistory
 	for(Prefix prefix : prefixes)
 	{
 	    Map<String, Long> prefixHosts = prefixHostHistory.get(prefix);
+	    
+	    if(prefixHosts == null)
+		continue; // ignore prefixes if they are brand new
+	    
 	    conflictingAsScore += 1 - (1.0 / prefixHosts.size());
 	}
 	
