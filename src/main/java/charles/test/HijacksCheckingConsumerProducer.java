@@ -37,7 +37,7 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 	
 	if(history.isAnnouncementGood(prefix, AS, time.longValue()))
 	{
-	    System.out.println("   Seen before: " + record);
+	    //System.out.println("   Seen before: " + record);
 	    return null;
 	}
 	
@@ -45,10 +45,10 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 	{
 	    ProducerRecord<String, String> kafkaRecord = new ProducerRecord<String, String>(suspiciousAsTopic, 0, "", AS);
 	    getProducer().send(kafkaRecord);
-	    System.out.println("Suspicious AS:destinationTopic " + AS);
+	    System.out.println("Suspicious AS: " + AS);
 	}
 	
-	System.out.println("New Record: " + record);
+	//System.out.println("New Record: " + record);
 	return record;
     }
 
