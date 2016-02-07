@@ -93,7 +93,7 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 		    + HijacksHistoryCounterConsumer.processedMessages + " / " + HijacksHistoryCounterConsumer.intermediateMessages
 		    + " / " + HijacksHistoryCounterConsumer.observedMessages);
 	}
-	while(lastTime < currentTime || currentTime == 0);
+	while(HijacksHistoryCounterConsumer.observedMessages < 200000);
 	
 	System.out.println("Starting to filter hijacks!");
 	
