@@ -41,6 +41,9 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 	while(lastTime < currentTime);
 	
 	System.out.println("Starting to filter hijacks!");
+	
+	HijacksCheckingConsumerProducer checker = new HijacksCheckingConsumerProducer();
+	checker.startAllTopics();
     }
 
     @Override
