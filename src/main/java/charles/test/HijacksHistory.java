@@ -120,6 +120,11 @@ public class HijacksHistory
 	}
 	String lastTimeAS = lastASMap.get(prefix);
 	lastASMap.put(prefix, AS);
+	if(lastTimeAS == null)
+	{
+	    // new data is fine
+	    return true;
+	}
 
 	if (!prefixHostHistory.containsKey(prefix))
 	{
