@@ -122,6 +122,8 @@ public class HijacksHistory
 		totalTime = Math.max(totalTime, entry.getValue());
 	    }
 	}
+	totalTime += time;
+	totalTimeMap.put(prefix, totalTime);
 
 	return timeAtAS / totalTime > threshold;
     }
