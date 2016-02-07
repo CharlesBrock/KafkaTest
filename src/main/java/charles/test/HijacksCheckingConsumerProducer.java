@@ -9,7 +9,7 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 {
     private HijacksHistory history;
     
-    static final String filteredConflictTopicPrefix = "test7-";
+    static final String filteredConflictTopicPrefix = "test8-";
     static final String suspiciousAsTopic = filteredConflictTopicPrefix + "suspicious-as";
     
     public HijacksCheckingConsumerProducer(HijacksHistory history)
@@ -43,9 +43,10 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 	
 	if(history.isSuspiciousAS(AS))
 	{
-	    ProducerRecord<String, String> kafkaRecord = new ProducerRecord<String, String>(suspiciousAsTopic, 0, "", AS);
+	    String message = AS + " has hijacked " + prefix;
+	    ProducerRecord<String, String> kafkaRecord = new ProducerRecord<String, String>(suspiciousAsTopic, 0, "", message);
 	    getProducer().send(kafkaRecord);
-	    System.out.println("Suspicious AS: " + AS);
+	    System.out.println("Suspicious AS " + message);
 	}
 	
 	//System.out.println("New Record: " + record);
