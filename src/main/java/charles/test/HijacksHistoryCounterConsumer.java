@@ -13,6 +13,8 @@ public class HijacksHistoryCounterConsumer extends BaseKafkaConsumer
 {
     HijacksHistory history;
     
+    public static long observedMessages = 0;
+    public static long intermediateMessages = 0;
     public static long processedMessages = 0;
 
     public HijacksHistoryCounterConsumer(HijacksHistory history)
@@ -41,7 +43,7 @@ public class HijacksHistoryCounterConsumer extends BaseKafkaConsumer
     @Override
     public String evaluateRecord(String record)
     {
-	processedMessages++;
+	observedMessages++;
 	try
 	{
 	    JsonElement element = new JsonParser().parse(record);
@@ -57,6 +59,8 @@ public class HijacksHistoryCounterConsumer extends BaseKafkaConsumer
 	    JsonObject asn = neighbors.get("asn").getAsJsonObject();
 	    String AS = asn.get("peer").getAsString();
 
+	    intermediateMessages++;
+	    
 	    if (!neighbors.has("message"))
 		return null;
 	    JsonObject message = neighbors.get("message").getAsJsonObject();
@@ -75,6 +79,7 @@ public class HijacksHistoryCounterConsumer extends BaseKafkaConsumer
 		{
 		    continue;
 		}
+		processedMessages++;
 		for (Entry<String, JsonElement> innerEntry : announceEntry.getValue().getAsJsonObject().entrySet())
 		{
 		    for (Entry<String, JsonElement> prefixEntry : innerEntry.getValue().getAsJsonObject().entrySet())
