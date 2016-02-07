@@ -59,7 +59,7 @@ public class HijacksHistoryCounterConsumer extends BaseKafkaConsumer
 	    JsonObject asn = neighbors.get("asn").getAsJsonObject();
 	    String AS = asn.get("peer").getAsString();
 
-	    intermediateMessages++;
+	    //intermediateMessages++;
 	    
 	    if (!neighbors.has("message"))
 		return null;
@@ -69,6 +69,8 @@ public class HijacksHistoryCounterConsumer extends BaseKafkaConsumer
 		return null;
 	    JsonObject update = message.get("update").getAsJsonObject();
 
+	    intermediateMessages++;
+	    
 	    if (!update.has("announce"))
 		return null;
 	    JsonObject announce = update.get("announce").getAsJsonObject();
