@@ -49,7 +49,7 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 	    System.out.println("Suspicious AS " + message);
 	}
 	
-	//System.out.println("New Record: " + record);
+	System.out.println("New Record: " + record);
 	return record;
     }
 
