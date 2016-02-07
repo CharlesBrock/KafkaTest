@@ -75,13 +75,14 @@ public class HijacksHistoryCounterConsumer extends BaseKafkaConsumer
 		return null;
 	    JsonObject announce = update.get("announce").getAsJsonObject();
 
-	    //intermediateMessages++;
-	    
+	    processedMessages++;
+
 	    for (Entry<String, JsonElement> announceEntry : announce.entrySet())
 	    {
-		processedMessages++;
 		for (Entry<String, JsonElement> innerEntry : announceEntry.getValue().getAsJsonObject().entrySet())
 		{
+		    if("null".equals(innerEntry.getKey()))
+			continue;
 		    for (Entry<String, JsonElement> prefixEntry : innerEntry.getValue().getAsJsonObject().entrySet())
 		    {
 			//if(!prefixEntry.getKey().matches(".+/.+"))
