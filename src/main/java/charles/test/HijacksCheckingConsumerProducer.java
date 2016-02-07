@@ -65,12 +65,12 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
     @Override
     public boolean isValidTopic(String topic)
     {
-	return topic.matches("HIJACKS.*");
+	return topic.matches("rib-rrc.*");
     }
 
     @Override
     public String getDestinationTopic(String topic)
     {
-	return "New-" + topic;
+	return "test1-" + topic;
     }
 }
