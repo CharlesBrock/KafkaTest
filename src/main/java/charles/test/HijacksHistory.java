@@ -71,6 +71,8 @@ public class HijacksHistory
 
 	if (conflictingAsScore > maxObservedAsScore)
 	    maxObservedAsScore = conflictingAsScore;
+	if(conflictingAsScore > .9 * maxObservedAsScore)
+	    System.out.println(AS + " got a suspicion score of " + conflictingAsScore + " (Max Score So Far: " + maxObservedAsScore + ")");
 
 	return conflictingAsScore > suspiciousAsThreshold;
     }
