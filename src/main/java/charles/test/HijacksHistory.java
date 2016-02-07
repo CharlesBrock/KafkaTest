@@ -14,8 +14,6 @@ public class HijacksHistory
     final int prefixThreshold = 8;
     final double suspiciousAsThreshold = .85;
 
-    private ConcurrentHashMap<Prefix, Double> totalTimeMap = new ConcurrentHashMap<>();
-
     // map of prefix to map of as to time at AS
     private ConcurrentHashMap<Prefix, ConcurrentHashMap<String, Long>> prefixHostHistory = new ConcurrentHashMap<>();
 
@@ -123,25 +121,23 @@ public class HijacksHistory
 	prefixHostHistory.get(prefix).put(AS, timeAtAS);
 
 	double totalTime = 0;
-	for (Entry<Prefix, Double> entry : totalTimeMap.entrySet())
-	{
-	    if (entry.getKey().isSubset(prefix))
-	    {
-		totalTime = Math.max(totalTime, entry.getValue());
-	    }
-	}
-	totalTime += time;
-	totalTimeMap.put(prefix, totalTime);
-
-	return timeAtAS / totalTime > threshold;
-    }
-
-    public double getTotalTimeSum()
-    {
-	double totalTime = 0;
-	for (Entry<Prefix, Double> entry : totalTimeMap.entrySet())
+	for (Entry<String, Long> entry : prefixHostHistory.get(prefix).entrySet())
 	{
 	    totalTime += entry.getValue();
+	}
+
+	return timeAtAS / totalTime < threshold;
+    }
+
+    public long getTotalTimeSum()
+    {
+	long totalTime = 0;
+	for (Map<String, Long> map : prefixHostHistory.values())
+	{
+	    for (Entry<String, Long> entry : map.entrySet())
+	    {
+		totalTime += entry.getValue();
+	    }
 	}
 	return totalTime;
     }
