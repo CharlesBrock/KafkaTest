@@ -1,11 +1,16 @@
 package charles.test;
 
+import org.apache.kafka.clients.producer.ProducerRecord;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 {
     private HijacksHistory history;
+    
+    static final String filteredConflictTopicPrefix = "test6-";
+    static final String suspiciousAsTopic = "test1-suspicious-as";
     
     public HijacksCheckingConsumerProducer(HijacksHistory history)
     {
@@ -38,7 +43,9 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 	
 	if(history.isSuspiciousAS(AS))
 	{
-	    System.out.println("Suspicious AS: " + AS);
+	    ProducerRecord<String, String> kafkaRecord = new ProducerRecord<String, String>(suspiciousAsTopic, 0, "", AS);
+	    getProducer().send(kafkaRecord);
+	    System.out.println("Suspicious AS:destinationTopic " + AS);
 	}
 	
 	System.out.println("New Record: " + record);
@@ -60,7 +67,7 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
     @Override
     public String getDestinationTopic(String topic)
     {
-	return "test5-" + topic;
+	return filteredConflictTopicPrefix + topic;
 	//return "unseen-" + topic;
     }
     
