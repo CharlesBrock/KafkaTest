@@ -59,7 +59,7 @@ public class HijacksHistoryCounterConsumer extends BaseKafkaConsumer
 	    JsonObject asn = neighbors.get("asn").getAsJsonObject();
 	    String AS = asn.get("peer").getAsString();
 
-	    //intermediateMessages++;
+	    intermediateMessages++;
 	    
 	    if (!neighbors.has("message"))
 		return null;
@@ -75,7 +75,7 @@ public class HijacksHistoryCounterConsumer extends BaseKafkaConsumer
 		return null;
 	    JsonObject announce = update.get("announce").getAsJsonObject();
 
-	    intermediateMessages++;
+	    //intermediateMessages++;
 	    
 	    for (Entry<String, JsonElement> announceEntry : announce.entrySet())
 	    {
@@ -84,8 +84,7 @@ public class HijacksHistoryCounterConsumer extends BaseKafkaConsumer
 		{
 		    for (Entry<String, JsonElement> prefixEntry : innerEntry.getValue().getAsJsonObject().entrySet())
 		    {
-			if(prefixEntry.getKey().equals("eor"))
-			    continue;
+			System.out.println(record);
 			history.isAnnouncementGood(new Prefix(prefixEntry.getKey()), AS, time.longValue());
 		    }
 		}
