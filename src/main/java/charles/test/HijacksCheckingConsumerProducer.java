@@ -82,7 +82,9 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 	    Thread.sleep(1000);
 	    lastTime = currentTime;
 	    currentTime = history.getTotalTimeSum();
-	    System.out.println(lastTime + " -> " + currentTime + " from " + HijacksHistoryCounterConsumer.processedMessages);
+	    System.out.println(lastTime + " -> " + currentTime + " processed " 
+		    + HijacksHistoryCounterConsumer.processedMessages + " / " + HijacksHistoryCounterConsumer.intermediateMessages
+		    + " / " + HijacksHistoryCounterConsumer.observedMessages);
 	}
 	while(lastTime < currentTime || currentTime == 0);
 	
