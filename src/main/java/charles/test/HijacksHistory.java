@@ -18,8 +18,11 @@ public class HijacksHistory
     private ConcurrentHashMap<Prefix, ConcurrentHashMap<String, Long>> prefixHostHistory = new ConcurrentHashMap<>();
 
     // map of thread to map of prefix to last announcement time
-    private ConcurrentHashMap<Thread, ConcurrentHashMap<Prefix, Long>> lastAnnouncementByThread = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Thread, ConcurrentHashMap<Prefix, Long>> lastAnnouncementTimeByThread = new ConcurrentHashMap<>();
 
+    // map of thread to map of prefix to last announcement as
+    private ConcurrentHashMap<Thread, ConcurrentHashMap<Prefix, String>> lastAnnouncementAsByThread = new ConcurrentHashMap<>();
+    
     // a map of as to announced prefixes
     private Map<String, Set<Prefix>> asGuestHistory = new HashMap<>();
 
@@ -84,15 +87,14 @@ public class HijacksHistory
 	    asGuestHistory.get(AS).add(prefix);
 	}
 
-	ConcurrentHashMap<Prefix, Long> lastAnnouncement = lastAnnouncementByThread.get(Thread.currentThread());
+	ConcurrentHashMap<Prefix, Long> lastAnnouncement = lastAnnouncementTimeByThread.get(Thread.currentThread());
 	if (lastAnnouncement == null)
 	{
 	    lastAnnouncement = new ConcurrentHashMap<>();
-	    lastAnnouncementByThread.put(Thread.currentThread(), lastAnnouncement);
+	    lastAnnouncementTimeByThread.put(Thread.currentThread(), lastAnnouncement);
 	}
-
+	
 	Long lastTimeSeen = lastAnnouncement.get(prefix);
-
 	if (lastTimeSeen == null)
 	{
 	    int steps = 32;
@@ -109,24 +111,37 @@ public class HijacksHistory
 	if (lastTimeSeen == null)
 	    return true;
 	time -= lastTimeSeen;
+	
+	ConcurrentHashMap<Prefix, String> lastASMap = lastAnnouncementAsByThread.get(Thread.currentThread());
+	if(lastASMap == null)
+	{
+	    lastASMap = new ConcurrentHashMap<>();
+	    lastAnnouncementAsByThread.put(Thread.currentThread(), lastASMap);
+	}
+	String lastTimeAS = lastASMap.get(prefix);
+	lastASMap.put(prefix, AS);
 
 	if (!prefixHostHistory.containsKey(prefix))
 	{
 	    prefixHostHistory.put(prefix, new ConcurrentHashMap<String, Long>());
 	}
-	Long timeAtAS = prefixHostHistory.get(prefix).get(AS);
-	if (timeAtAS == null)
-	    timeAtAS = (long) 0;
-	timeAtAS += time;
-	prefixHostHistory.get(prefix).put(AS, timeAtAS);
+	Long timeAtLastAS = prefixHostHistory.get(prefix).get(lastTimeAS);
+	if (timeAtLastAS == null)
+	    timeAtLastAS = (long) 0;
+	timeAtLastAS += time;
+	prefixHostHistory.get(prefix).put(AS, timeAtLastAS);
 
+	Long timeAtCurrentAs = prefixHostHistory.get(prefix).get(AS);
+	if(timeAtCurrentAs == null)
+	    timeAtCurrentAs = 0L;
+	
 	double totalTime = 0;
 	for (Entry<String, Long> entry : prefixHostHistory.get(prefix).entrySet())
 	{
 	    totalTime += entry.getValue();
 	}
 
-	return timeAtAS / totalTime < threshold;
+	return timeAtCurrentAs / totalTime < threshold;
     }
 
     public long getTotalTimeSum()
