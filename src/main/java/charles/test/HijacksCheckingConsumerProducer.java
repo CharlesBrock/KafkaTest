@@ -54,7 +54,7 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
     @Override
     public String getDestinationTopic(String topic)
     {
-	return "test3-" + topic;
+	return "unseen-" + topic;
     }
     
     public static void main(String[] args) throws InterruptedException
