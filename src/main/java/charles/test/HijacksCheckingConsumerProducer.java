@@ -1,26 +1,62 @@
 package charles.test;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.Future;
-
-import javax.xml.soap.Detail;
-
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.PartitionInfo;
-import org.apache.kafka.common.TopicPartition;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 {
+    private HijacksHistory history;
+    
+    public HijacksCheckingConsumerProducer(HijacksHistory history)
+    {
+	this.history = history;
+    }
+    
+    @Override
+    public String getProducerHost()
+    {
+	return localCluster;
+    }
+
+    @Override
+    public String evaluateRecord(String record)
+    {
+	JsonObject conflict = new JsonParser().parse(record).getAsJsonObject();
+	String[] path = conflict.get("as_path").getAsString().split("\\s+");
+	String AS = path[path.length - 1];
+	
+	Double time = conflict.get("timestamp").getAsDouble();
+	
+	String prefixString = conflict.get("prefix").getAsString();
+	Prefix prefix = new Prefix(prefixString);
+	
+	if(history.isAnnouncementGood(prefix, AS, time.longValue()))
+	{
+	    System.out.println("   Seen before: " + record);
+	    return null;
+	}
+	System.out.println("New Record: " + record);
+	return record;
+    }
+
+    @Override
+    public String getConsumerHost()
+    {
+	return localCluster;
+    }
+
+    @Override
+    public boolean isValidTopic(String topic)
+    {
+	return topic.matches("rib-rrc.*");
+    }
+
+    @Override
+    public String getDestinationTopic(String topic)
+    {
+	return "test1-" + topic;
+    }
+    
     public static void main(String[] args) throws InterruptedException
     {
 	HijacksHistory history = new HijacksHistory();
@@ -42,38 +78,8 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 	
 	System.out.println("Starting to filter hijacks!");
 	
-	HijacksCheckingConsumerProducer checker = new HijacksCheckingConsumerProducer();
+	HijacksCheckingConsumerProducer checker = new HijacksCheckingConsumerProducer(history);
 	checker.startAllTopics();
     }
 
-    @Override
-    public String getProducerHost()
-    {
-	return localCluster;
-    }
-
-    @Override
-    public String evaluateRecord(String record)
-    {
-	System.out.println(record);
-	return null;
-    }
-
-    @Override
-    public String getConsumerHost()
-    {
-	return localCluster;
-    }
-
-    @Override
-    public boolean isValidTopic(String topic)
-    {
-	return topic.matches("rib-rrc.*");
-    }
-
-    @Override
-    public String getDestinationTopic(String topic)
-    {
-	return "test1-" + topic;
-    }
 }
