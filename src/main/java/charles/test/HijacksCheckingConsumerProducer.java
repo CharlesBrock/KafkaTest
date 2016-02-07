@@ -84,7 +84,7 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 	    currentTime = history.getTotalTimeSum();
 	    System.out.println(lastTime + " -> " + currentTime);
 	}
-	while(lastTime < currentTime && currentTime > 0);
+	while(lastTime < currentTime || currentTime == 0);
 	
 	System.out.println("Starting to filter hijacks!");
 	
