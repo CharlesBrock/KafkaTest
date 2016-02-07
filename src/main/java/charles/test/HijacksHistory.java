@@ -73,6 +73,7 @@ public class HijacksHistory
 
     synchronized boolean isAnnouncementGood(Prefix prefix, String AS, long time)
     {
+	System.out.println("HERE!");
 	if(time < earliestTime)
 	{
 	    earliestTime = time;
