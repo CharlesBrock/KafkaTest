@@ -41,8 +41,6 @@ public class HijacksHistoryCounterConsumer extends BaseKafkaConsumer
     {
 	try
 	{
-	    System.out.println(record);
-	    
 	    JsonElement element = new JsonParser().parse(record);
 
 	    JsonObject bgpMessage = element.getAsJsonObject();

@@ -60,7 +60,7 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
     @Override
     public String getDestinationTopic(String topic)
     {
-	return "test4-" + topic;
+	return "test5-" + topic;
 	//return "unseen-" + topic;
     }
     
@@ -71,9 +71,9 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 	HijacksHistoryCounterConsumer counter = new HijacksHistoryCounterConsumer(history);
 	counter.startAllTopics();
 	
-	System.out.println("Waiting for all of the history to be read!");
+	Thread.sleep(1000);
 	
-	Thread.sleep(60 * 1000);
+	System.out.println("Waiting for all of the history to be read!");
 	
 	double lastTime = 0;
 	double currentTime = 0;
@@ -81,9 +81,10 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 	{
 	    Thread.sleep(1000);
 	    lastTime = currentTime;
-	    currentTime = history.getTotalTimeSum(); 
+	    currentTime = history.getTotalTimeSum();
+	    System.out.println(lastTime + " -> " + currentTime);
 	}
-	while(lastTime < currentTime);
+	while(lastTime < currentTime && currentTime > 0);
 	
 	System.out.println("Starting to filter hijacks!");
 	
