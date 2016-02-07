@@ -93,11 +93,9 @@ public class HijacksHistoryCounterConsumer extends BaseKafkaConsumer
 	    }
 	} catch (ClassCastException | NullPointerException | IllegalStateException e)
 	{
-	    synchronized (this)
-	    {
-		System.out.println("Can't parse: " + record);
-		e.printStackTrace();
-	    }
+	    System.out.println("Can't parse: " + record);
+	    e.printStackTrace();
+	    System.exit(-1);
 	}
 	return null;
     }
