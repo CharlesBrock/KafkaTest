@@ -35,6 +35,12 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 	    //System.out.println("   Seen before: " + record);
 	    return null;
 	}
+	
+	if(history.isSuspiciousAS(AS))
+	{
+	    System.out.println("Suspicious AS: " + AS);
+	}
+	
 	//System.out.println("New Record: " + record);
 	return record;
     }
@@ -54,7 +60,8 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
     @Override
     public String getDestinationTopic(String topic)
     {
-	return "unseen-" + topic;
+	return "test4-" + topic;
+	//return "unseen-" + topic;
     }
     
     public static void main(String[] args) throws InterruptedException
