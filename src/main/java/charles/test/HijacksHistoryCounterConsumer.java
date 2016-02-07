@@ -12,6 +12,8 @@ import com.google.gson.JsonParser;
 public class HijacksHistoryCounterConsumer extends BaseKafkaConsumer
 {
     HijacksHistory history;
+    
+    public static long processedMessages = 0;
 
     public HijacksHistoryCounterConsumer(HijacksHistory history)
     {
@@ -39,6 +41,7 @@ public class HijacksHistoryCounterConsumer extends BaseKafkaConsumer
     @Override
     public String evaluateRecord(String record)
     {
+	processedMessages++;
 	try
 	{
 	    JsonElement element = new JsonParser().parse(record);
