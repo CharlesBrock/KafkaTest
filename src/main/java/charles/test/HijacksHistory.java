@@ -11,6 +11,7 @@ public class HijacksHistory
 {
     final double threshold = .01;
     final int prefixThreshold = 8;
+    final double suspiciousAsThreshold = .25;
 
     private Map<Prefix, Double> totalTimeMap = new HashMap<>();
 
@@ -23,6 +24,9 @@ public class HijacksHistory
     // a map of as to announced prefixes
     private Map<String, Set<Prefix>> asGuestHistory = new HashMap<>();
 
+    
+    private double maxObservedAsScore = 0;
+    
     synchronized public boolean isSuspiciousAS(String AS)
     {
 	Set<Prefix> prefixes = asGuestHistory.get(AS);
@@ -48,13 +52,21 @@ public class HijacksHistory
 		    }
 		}
 	    }
+	    
+	    if(prefixHosts == null)
+		continue; // why do I need this?
 
 	    conflictingAsScore += 1 - (1.0 / prefixHosts.size());
 	}
 
 	conflictingAsScore /= prefixes.size();
 
-	return conflictingAsScore > .25;
+	if(conflictingAsScore > maxObservedAsScore)
+	    maxObservedAsScore = conflictingAsScore;
+	if(conflictingAsScore > .9 * maxObservedAsScore)
+	    System.out.println(AS + " got a suspicion score of " + conflictingAsScore + " (Max Score So Far: " + maxObservedAsScore + ")");
+	
+	return conflictingAsScore > suspiciousAsThreshold;
     }
 
     synchronized boolean isAnnouncementGood(Prefix prefix, String AS, long time)
