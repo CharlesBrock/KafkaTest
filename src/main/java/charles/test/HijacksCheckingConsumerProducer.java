@@ -19,7 +19,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.TopicPartition;
 
-public class CopyConsumerProducer implements Runnable
+public class HijacksCheckingConsumerProducer implements Runnable
 {
     private static KafkaProducer<String, String> producer = null;
 
@@ -27,7 +27,7 @@ public class CopyConsumerProducer implements Runnable
     String destinationTopic;
     int partition;
 
-    public CopyConsumerProducer(String sourceTopic, int partition, String destinationTopic)
+    public HijacksCheckingConsumerProducer(String sourceTopic, int partition, String destinationTopic)
     {
 	this.sourceTopic = sourceTopic;
 	this.partition = partition;
@@ -67,7 +67,7 @@ public class CopyConsumerProducer implements Runnable
 	return producer;
     }
 
-    @SuppressWarnings({"rawtypes" })
+    @SuppressWarnings({ "rawtypes" })
     public void run()
     {
 	KafkaConsumer<String, String> consumer = getConsumer();
@@ -78,14 +78,15 @@ public class CopyConsumerProducer implements Runnable
 	consumer.seekToBeginning(topicPartition);
 
 	Producer<String, String> producer = getProducer();
-	
+
 	while (true)
 	{
 	    ConsumerRecords<String, String> records = consumer.poll(100);
 	    List<Future> futures = new LinkedList<>();
 	    for (ConsumerRecord<String, String> record : records)
 	    {
-		ProducerRecord<String, String> newRecord = new ProducerRecord<String, String>("cb_" + sourceTopic, 0, record.key(), record.value());
+		ProducerRecord<String, String> newRecord = new ProducerRecord<String, String>("cb_" + sourceTopic, 0,
+			record.key(), record.value());
 		futures.add(producer.send(newRecord));
 	    }
 	    while (futures.size() > 0)
@@ -111,18 +112,33 @@ public class CopyConsumerProducer implements Runnable
 	}
     }
 
-    public static void main(String[] args)
+    public static void main(String[] args) throws InterruptedException
     {
-	Map<String, List<PartitionInfo>> topics = getConsumer().listTopics();
-	
+	Map<String, List<PartitionInfo>> topics = HijacksHistoryCounterConsumer.getConsumer().listTopics();
+
+	HijacksHistory history = new HijacksHistory();
+
 	for (String topic : topics.keySet())
 	{
-	    for (PartitionInfo partitionInfo : topics.get(topic))
+	    if (topic.matches("raw-rrc.*"))
 	    {
-		CopyConsumerProducer copier = new CopyConsumerProducer(topic, partitionInfo.partition(), "cb_" + topic);
-		Thread thread = new Thread(copier);
-		thread.start();
+		for (PartitionInfo partitionInfo : topics.get(topic))
+		{
+		    HijacksHistoryCounterConsumer copier = new HijacksHistoryCounterConsumer(topic,
+			    partitionInfo.partition(), history);
+		    Thread thread = new Thread(copier);
+		    thread.start();
+		}
 	    }
 	}
+	double lastTime = 0;
+	double currentTime = 0;
+	do
+	{
+	    Thread.sleep(1000);
+	    lastTime = currentTime;
+	    currentTime = history.getTotalTimeSum(); 
+	}
+	while(lastTime < currentTime);
     }
 }
