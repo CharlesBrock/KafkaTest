@@ -14,7 +14,7 @@ public class HijacksHistory
     final int prefixThreshold = 8;
     final double suspiciousAsThreshold = .25;
 
-    private Map<Prefix, Double> totalTimeMap = new HashMap<>();
+    private ConcurrentHashMap<Prefix, Double> totalTimeMap = new ConcurrentHashMap<>();
 
     // map of prefix to map of as to time at AS
     private ConcurrentHashMap<Prefix, ConcurrentHashMap<String, Long>> prefixHostHistory = new ConcurrentHashMap<>();
