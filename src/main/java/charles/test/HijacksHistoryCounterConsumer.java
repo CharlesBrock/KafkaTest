@@ -12,7 +12,7 @@ import com.google.gson.JsonParser;
 public class HijacksHistoryCounterConsumer extends BaseKafkaConsumer
 {
     HijacksHistory history;
-    
+
     public static long observedMessages = 0;
     public static long intermediateMessages = 0;
     public static long processedMessages = 0;
@@ -60,7 +60,7 @@ public class HijacksHistoryCounterConsumer extends BaseKafkaConsumer
 	    String AS = asn.get("peer").getAsString();
 
 	    intermediateMessages++;
-	    
+
 	    if (!neighbors.has("message"))
 		return null;
 	    JsonObject message = neighbors.get("message").getAsJsonObject();
@@ -69,8 +69,8 @@ public class HijacksHistoryCounterConsumer extends BaseKafkaConsumer
 		return null;
 	    JsonObject update = message.get("update").getAsJsonObject();
 
-	    //intermediateMessages++;
-	    
+	    // intermediateMessages++;
+
 	    if (!update.has("announce"))
 		return null;
 	    JsonObject announce = update.get("announce").getAsJsonObject();
@@ -81,20 +81,23 @@ public class HijacksHistoryCounterConsumer extends BaseKafkaConsumer
 	    {
 		for (Entry<String, JsonElement> innerEntry : announceEntry.getValue().getAsJsonObject().entrySet())
 		{
-		    if("null".equals(innerEntry.getKey()))
+		    if ("null".equals(innerEntry.getKey()))
 			continue;
 		    for (Entry<String, JsonElement> prefixEntry : innerEntry.getValue().getAsJsonObject().entrySet())
 		    {
-			//if(!prefixEntry.getKey().matches(".+/.+"))
-			//    continue;
+			// if(!prefixEntry.getKey().matches(".+/.+"))
+			// continue;
 			history.isAnnouncementGood(new Prefix(prefixEntry.getKey()), AS, time.longValue());
 		    }
 		}
 	    }
 	} catch (ClassCastException | NullPointerException | IllegalStateException e)
 	{
-	    System.out.println("Can't parse: " + record);
-	    e.printStackTrace();
+	    synchronized (this)
+	    {
+		System.out.println("Can't parse: " + record);
+		e.printStackTrace();
+	    }
 	}
 	return null;
     }
