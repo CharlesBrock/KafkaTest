@@ -84,7 +84,8 @@ public class HijacksHistoryCounterConsumer extends BaseKafkaConsumer
 		{
 		    for (Entry<String, JsonElement> prefixEntry : innerEntry.getValue().getAsJsonObject().entrySet())
 		    {
-			System.out.println(record);
+			if(!prefixEntry.getKey().matches(".+/.+"))
+			    continue;
 			history.isAnnouncementGood(new Prefix(prefixEntry.getKey()), AS, time.longValue());
 		    }
 		}
