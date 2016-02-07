@@ -27,6 +27,8 @@ public class HijacksHistory
     
     private double maxObservedAsScore = 0;
     
+    long earliestTime = Long.MAX_VALUE;
+    
     synchronized public boolean isSuspiciousAS(String AS)
     {
 	Set<Prefix> prefixes = asGuestHistory.get(AS);
@@ -71,6 +73,12 @@ public class HijacksHistory
 
     synchronized boolean isAnnouncementGood(Prefix prefix, String AS, long time)
     {
+	if(time < earliestTime)
+	{
+	    earliestTime = time;
+	    System.out.println("New Earliest Time: " + time);
+	}
+	
 	if (prefix.prefix <= prefixThreshold)
 	    return true; // we don't care about the defaultish routes
 
