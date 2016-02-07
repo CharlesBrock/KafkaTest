@@ -54,7 +54,7 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
     @Override
     public String getDestinationTopic(String topic)
     {
-	return "test2-" + topic;
+	return "test3-" + topic;
     }
     
     public static void main(String[] args) throws InterruptedException
@@ -65,6 +65,8 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 	counter.startAllTopics();
 	
 	System.out.println("Waiting for all of the history to be read!");
+	
+	Thread.sleep(60 * 1000);
 	
 	double lastTime = 0;
 	double currentTime = 0;
