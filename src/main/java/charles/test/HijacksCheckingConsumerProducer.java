@@ -9,8 +9,8 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 {
     private HijacksHistory history;
     
-    static final String filteredConflictTopicPrefix = "test6-";
-    static final String suspiciousAsTopic = "test1-suspicious-as";
+    static final String filteredConflictTopicPrefix = "test7-";
+    static final String suspiciousAsTopic = filteredConflictTopicPrefix + "suspicious-as";
     
     public HijacksCheckingConsumerProducer(HijacksHistory history)
     {

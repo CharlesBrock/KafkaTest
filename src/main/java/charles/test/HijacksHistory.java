@@ -12,7 +12,7 @@ public class HijacksHistory
 {
     final double threshold = .01;
     final int prefixThreshold = 8;
-    final double suspiciousAsThreshold = .25;
+    final double suspiciousAsThreshold = .85;
 
     private ConcurrentHashMap<Prefix, Double> totalTimeMap = new ConcurrentHashMap<>();
 
