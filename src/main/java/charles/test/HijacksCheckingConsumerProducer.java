@@ -32,10 +32,10 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 	
 	if(history.isAnnouncementGood(prefix, AS, time.longValue()))
 	{
-	    System.out.println("   Seen before: " + record);
+	    //System.out.println("   Seen before: " + record);
 	    return null;
 	}
-	System.out.println("New Record: " + record);
+	//System.out.println("New Record: " + record);
 	return record;
     }
 
@@ -54,7 +54,7 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
     @Override
     public String getDestinationTopic(String topic)
     {
-	return "test1-" + topic;
+	return "test2-" + topic;
     }
     
     public static void main(String[] args) throws InterruptedException
