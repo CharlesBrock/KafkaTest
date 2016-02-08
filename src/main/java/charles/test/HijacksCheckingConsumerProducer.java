@@ -46,7 +46,7 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 	    String message = AS + " has hijacked " + prefix;
 	    ProducerRecord<String, String> kafkaRecord = new ProducerRecord<String, String>(suspiciousAsTopic, 0, "", message);
 	    getProducer().send(kafkaRecord);
-	    System.out.println("Suspicious AS " + message);AS17832AS17832
+	    System.out.println("Suspicious AS " + message);
 	}
 	
 	System.out.println("New Record: " + record);
@@ -83,7 +83,7 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 	
 	System.out.println("Waiting for all of the history to be read!");
 	
-	double lastTime = 0;AS17832
+	double lastTime = 0;
 	double currentTime = 0;
 	do
 	{
