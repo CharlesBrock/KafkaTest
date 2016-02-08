@@ -9,7 +9,7 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 {
     private HijacksHistory history;
     
-    static final String filteredConflictTopicPrefix = "test9-";
+    static final String filteredConflictTopicPrefix = "test10-";
     static final String suspiciousAsTopic = filteredConflictTopicPrefix + "suspicious-as";
     
     public HijacksCheckingConsumerProducer(HijacksHistory history)
@@ -46,7 +46,7 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 	    String message = AS + " has hijacked " + prefix;
 	    ProducerRecord<String, String> kafkaRecord = new ProducerRecord<String, String>(suspiciousAsTopic, 0, "", message);
 	    getProducer().send(kafkaRecord);
-	    System.out.println("Suspicious AS " + message);
+	    System.out.println("Suspicious AS " + message);AS17832AS17832
 	}
 	
 	System.out.println("New Record: " + record);
@@ -83,7 +83,7 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 	
 	System.out.println("Waiting for all of the history to be read!");
 	
-	double lastTime = 0;
+	double lastTime = 0;AS17832
 	double currentTime = 0;
 	do
 	{
@@ -94,7 +94,7 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 		    + HijacksHistoryCounterConsumer.processedMessages + " / " + HijacksHistoryCounterConsumer.intermediateMessages
 		    + " / " + HijacksHistoryCounterConsumer.observedMessages);
 	}
-	while(HijacksHistoryCounterConsumer.observedMessages < 300000);
+	while(HijacksHistoryCounterConsumer.observedMessages < 400000);
 	
 	System.out.println("Starting to filter hijacks!");
 	
