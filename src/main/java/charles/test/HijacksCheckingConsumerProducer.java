@@ -47,9 +47,10 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 	    ProducerRecord<String, String> kafkaRecord = new ProducerRecord<String, String>(suspiciousAsTopic, 0, "", message);
 	    getProducer().send(kafkaRecord);
 	    System.out.println("Suspicious AS " + message);
+	    System.out.println("	Record: " + record);
 	}
 	
-	System.out.println("New Record: " + record);
+	//System.out.println("New Record: " + record);
 	return record;
     }
 
@@ -94,7 +95,7 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 		    + HijacksHistoryCounterConsumer.processedMessages + " / " + HijacksHistoryCounterConsumer.intermediateMessages
 		    + " / " + HijacksHistoryCounterConsumer.observedMessages);
 	}
-	while(HijacksHistoryCounterConsumer.observedMessages < 400000);
+	while(HijacksHistoryCounterConsumer.observedMessages < 450000);
 	
 	System.out.println("Starting to filter hijacks!");
 	
