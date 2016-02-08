@@ -12,7 +12,7 @@ public class HijacksHistory
 {
     final double threshold = .01;
     final int prefixThreshold = 8;
-    final double suspiciousAsThreshold = .85;
+    final double suspiciousAsThreshold = .75;
 
     // map of prefix to map of as to time at AS
     private ConcurrentHashMap<Prefix, ConcurrentHashMap<String, Long>> prefixHostHistory = new ConcurrentHashMap<>();
@@ -71,8 +71,8 @@ public class HijacksHistory
 
 	if (conflictingAsScore > maxObservedAsScore)
 	    maxObservedAsScore = conflictingAsScore;
-	if(conflictingAsScore > .9 * maxObservedAsScore)
-	    System.out.println(AS + " got a suspicion score of " + conflictingAsScore + " (Max Score So Far: " + maxObservedAsScore + ")");
+	//if(conflictingAsScore > .9 * maxObservedAsScore)
+	//    System.out.println(AS + " got a suspicion score of " + conflictingAsScore + " (Max Score So Far: " + maxObservedAsScore + ")");
 
 	return conflictingAsScore > suspiciousAsThreshold;
     }
