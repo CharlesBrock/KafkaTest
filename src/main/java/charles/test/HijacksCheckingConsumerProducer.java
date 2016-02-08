@@ -9,7 +9,7 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 {
     private HijacksHistory history;
     
-    static final String filteredConflictTopicPrefix = "test10-";
+    static final String filteredConflictTopicPrefix = "filtered-";
     static final String suspiciousAsTopic = filteredConflictTopicPrefix + "suspicious-as";
     
     public HijacksCheckingConsumerProducer(HijacksHistory history)
@@ -95,7 +95,7 @@ public class HijacksCheckingConsumerProducer extends BaseKafkaOperation
 		    + HijacksHistoryCounterConsumer.processedMessages + " / " + HijacksHistoryCounterConsumer.intermediateMessages
 		    + " / " + HijacksHistoryCounterConsumer.observedMessages);
 	}
-	while(HijacksHistoryCounterConsumer.observedMessages < 450000);
+	while(lastTime < currentTime || currentTime == 0);
 	
 	System.out.println("Starting to filter hijacks!");
 	
